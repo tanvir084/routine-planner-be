@@ -3,11 +3,17 @@ const cors = require("cors");
 require("dotenv").config();
 const { addHeader } = require("./app/middlewares");
 const db = require("./app/models");
+const passport = require("passport");
 const app = express();
 const mongoURI = process.env.MONGODB_URI;
 
+const { applyPassportStrategy } = require("./app/middlewares/passport");
+
 const {
   authRouter,
+  scheduleRouter,
+  studyPlanRouter,
+  generatedPlanner,
 } = require("./app/routes");
 
 const corsOptions = {
@@ -19,6 +25,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+applyPassportStrategy(passport);
 
 const dbConnect = async (db) => {
   const url = mongoURI;
@@ -43,6 +50,9 @@ app.use(function (req, res, next) {
 });
 
 app.use(authRouter);
+app.use(scheduleRouter);
+app.use(studyPlanRouter);
+app.use(generatedPlanner);
 
 // set port, listen for requests
 const PORT = process.env.SERVER_PORT || 8080;

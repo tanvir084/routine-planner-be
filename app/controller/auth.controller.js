@@ -13,9 +13,7 @@ const signUpController = async (req, res) => {
     const { error } = signupValidation(req?.body);
 
     if (error) {
-      return res
-        .status(400)
-        .send({ success: false, message: error?.message });
+      return res.status(400).send({ success: false, message: error?.message });
     }
 
     const { email, password, fullName } = req?.body ?? {};
@@ -36,7 +34,7 @@ const signUpController = async (req, res) => {
 
     //ACCESS TOKEN
     const body = {
-      _id: user?._id,
+      _id: String(user?._id),
       email: user?.email,
     };
     const token = jwt.sign({ user: body }, process.env.JWT_SECRET, {
@@ -45,7 +43,7 @@ const signUpController = async (req, res) => {
 
     return res.status(201).send({
       success: true,
-      message: "User logged in successfully.",
+      message: 'User logged in successfully.',
       data: {
         access_token: token,
         info: {
@@ -79,7 +77,7 @@ const signInController = async (req, res) => {
     if (!user) {
       return res
         .status(400)
-        .send({ success: false, message: "Invalid Email or Password." });
+        .send({ success: false, message: 'Invalid Email or Password.' });
     }
 
     // CHECK PASSWORD
@@ -87,13 +85,13 @@ const signInController = async (req, res) => {
     if (!validPass) {
       return res.status(400).send({
         success: false,
-        message: "Email or Password is wrong",
+        message: 'Email or Password is wrong',
       });
     }
-    
+
     //ACCESS TOKEN
     const body = {
-      _id: user?._id,
+      _id: String(user?._id),
       email: user?.email,
     };
 
@@ -103,7 +101,7 @@ const signInController = async (req, res) => {
 
     return res.status(201).send({
       success: true,
-      message: "User logged in successfully.",
+      message: 'User logged in successfully.',
       data: {
         access_token: token,
         info: {
